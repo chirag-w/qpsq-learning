@@ -4,6 +4,7 @@ from qiskit import QuantumCircuit
 from qiskit.extensions import UnitaryGate
 from qiskit import Aer
 from util import *
+from states import *
 
 def construct_dataset(U,N,n):
     #Returns a dataset containing the classical description of states before and after the unknown unitary is applied
@@ -64,3 +65,41 @@ def apply_unitary_measure(U,input_states):
 #     print(inp[i])
 #     print(out[i])
 #     print()
+
+from obs import *
+from unitaries import *
+ 
+'''
+Construction a dataset via QSQ with an unknown U
+'''
+def construct_dataset_qsq(U,O,N,n,tau):
+    #Returns a dataset containing the classical description of states before and after the unknown unitary is applied
+    #U provided as a matrix
+    U = UnitaryGate(U)
+    inp = pauli_product_states(N,n)
+    out = q_statistical_query(U,O,inp,tau)
+    return inp, out
+
+'''
+Integration of a Quantum Statistical Query Oracle Qstat_E(inp, obs, tau) (refer to the paper):
+
+This function computes trace(O_i(U * rho * U^dag))
+
+return: {alpha_i}_{i=1}^N
+'''
+def q_statistical_query(U,O,input_states,tau):
+    alpha = np.zeros(N, dtype = float)
+    output_states = []
+    N = len(input_states)
+    n = len(input_states[0])
+    Udg = U.conjugate().transpose()
+    for i in range(N):
+        output_i = U @ input_states[i] @ Udg
+        output_states.append(output_i)
+        # Note: To adapt O representation
+        exp_i = np.trace(O @ output_i)
+        
+        alpha[i] = np.random.normal(exp_i, tau, 1)[0]
+        
+    return alpha
+

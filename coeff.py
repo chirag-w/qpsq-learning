@@ -110,13 +110,23 @@ def hyperparams(eps,O,n):
     eps_tilde = num/denom
     return k, eps_tilde
 
-def learn(U,O,N,n,eps, construct_data = True, inp = None, out = None):
+def learn(U,O,N,n,eps, construct_data = True, inp = None, out = None, flag = 0, tau = 0):
     k,eps_tilde = hyperparams(eps,O,n)
     # print(k,eps_tilde)
     # eps_tilde = 0
-    if construct_data:  #If dataset not provided already
-        inp, out = construct_dataset(U,N,n) #Construct dataset consisting of single-qubit stabilizer states
-    obs_val = shadow_observable(O,out) #Compute output of observable on shadow outputs 
+
+    if flag == 0:
+        #Classical Shadow Tomography (with random Pauli measurements)
+        if construct_data:  #If dataset not provided already
+            inp, out = construct_dataset(U,N,n) #Construct dataset consisting of single-qubit stabilizer states
+        obs_val = shadow_observable(O,out) #Compute output of observable on shadow outputs 
+
+    else:
+        #Quantum Statistical Query
+        if construct_data:
+            inp, out = construct_dataset_qsq(U,O,N,n,tau)  
+        obs_val = out
+
     paulis = generate_paulis(inp,n,k)
     x = {} #Coefficients of the approximate k-truncated observable
     eta = sum_coeff(O)
