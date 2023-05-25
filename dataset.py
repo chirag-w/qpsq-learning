@@ -75,31 +75,41 @@ Construction a dataset via QSQ with an unknown U
 def construct_dataset_qsq(U,O,N,n,tau):
     #Returns a dataset containing the classical description of states before and after the unknown unitary is applied
     #U provided as a matrix
-    U = UnitaryGate(U)
-    inp = pauli_product_states(N,n)
-    out = q_statistical_query(U,O,inp,tau)
+    inp = np.random.randint(0,6,(N,n))
+    out = q_statistical_query(U,O,inp,N,tau)
     return inp, out
 
 '''
 Integration of a Quantum Statistical Query Oracle Qstat_E(inp, obs, tau) (refer to the paper):
 
-This function computes trace(O_i(U * rho * U^dag))
+This function computes trace(O(U * rho * U^dag))
 
 return: {alpha_i}_{i=1}^N
 '''
-def q_statistical_query(U,O,input_states,tau):
+def q_statistical_query(U,O,input_states,N,tau):
     alpha = np.zeros(N, dtype = float)
-    output_states = []
+    # output_states = []
     N = len(input_states)
     n = len(input_states[0])
     Udg = U.conjugate().transpose()
     for i in range(N):
-        output_i = U @ input_states[i] @ Udg
-        output_states.append(output_i)
-        # Note: To adapt O representation
-        exp_i = np.trace(O @ output_i)
+        #Convert state from string to density matrix
+        rho = [1]
+        for j in range(n):
+            rho = np.kron(rho,pauli_states[input_states[i][j]])
+        output_i = U @ rho @ Udg
+        # output_states.append(output_i)
         
-        alpha[i] = np.random.normal(exp_i, tau, 1)[0]
+        exp_i = 0
+        for P in O:
+            coeff = O[P] #Coefficient of Pauli P in pauli basis representation of O
+            obs = 1
+            for ind in range(len(P)):
+                obs = np.kron(obs,pauli_obs[int(P[ind])])
+            exp_i+= coeff*np.trace(obs@output_i).real
+
+        dev = np.random.normal(0, tau/3, 1)[0]  #By choosing std deviation tau/3, 99.9% of deviations will be between -tau and +tau
+        alpha[i] = exp_i+dev
         
     return alpha
 
