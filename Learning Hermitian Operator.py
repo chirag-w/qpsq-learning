@@ -121,6 +121,8 @@ coeff_L = []
 for i in L4:
   coeff_L.append(np.sqrt(circuit(i)))
 
+
+##############################
 # It remains to estimate the sign. Given two Pauli strings, we can estimate if their signs are equal or not with a single QSQ. This allows us to learn all the coefficients up to a global sign.
 
 dev_super = qml.device("default.qubit", wires=4*n+3)
