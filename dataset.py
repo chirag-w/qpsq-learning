@@ -110,6 +110,7 @@ def q_statistical_query(U,O,input_states,N,tau):
 
         dev = np.random.normal(0, tau/3, 1)[0]  #By choosing std deviation tau/3, 99.9% of deviations will be between -tau and +tau
         alpha[i] = exp_i+dev
-        
+        # print(input_states[i], exp_i, alpha[i])
+
     return alpha
 
