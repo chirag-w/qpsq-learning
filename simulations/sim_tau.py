@@ -40,7 +40,10 @@ d_str = ['classical','stabilizer','haar_states']
 
 eps = 0.9
 tolerance = np.array([0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5])
-samples = np.array([100, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000])
+step = 50
+N_min = 50
+N_max = 1000
+samples = range(N_min,N_max+1,step)
 num_shots = 10
 
 for u_iter in range(len(unitaries)):
@@ -66,7 +69,7 @@ for u_iter in range(len(unitaries)):
                 error /= (num_shots*len(D[d_iter]))
                 print("Unitary = ", u_str[u_iter],", Distribution = ", d_str[d_iter],", N = ",N,", tau = ",tau ,", n = ",n,", error = ",error)
                 data[t_iter,N_iter] = error 
-        filename = u_str[u_iter]+"_"+d_str[d_iter]+"_eps"+str(eps)+"_reps"+str(num_shots)+"_"+o_str+"_n"+str(n)
+        filename = u_str[u_iter]+"_"+d_str[d_iter]+"_eps"+str(eps)+"_reps"+str(num_shots)+"_"+o_str+"_n"+str(n)+"_N"+str(N_min)+"-"+str(N_max)
         np.save(filename,data)
 
 
