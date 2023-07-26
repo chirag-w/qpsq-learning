@@ -23,7 +23,7 @@ def haar_unitary(d):
 
 U = haar_unitary(2**n)
 
-
+obs = [qml.Identity, qml.PauliX, qml.PauliY,qml.PauliZ]
 def function_matrix(U,string):
 
   qml.QubitUnitary(U,list(range(num_qubits)))
