@@ -1,6 +1,10 @@
 #Plot errors in two methods of constructing QSQ oracles
 #1 - Classical shadows for measuring observables
-#2 - Norally distributed error
+#2 - Normally distributed error
+
+import sys
+
+sys.path.append('../')
 
 from coeff import *
 import seaborn as sns
