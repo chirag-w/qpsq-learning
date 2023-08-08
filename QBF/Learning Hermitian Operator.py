@@ -79,7 +79,8 @@ def GL_alg(eps):
     string = []
     string.append(k)
     string.extend([0]*(n-1))
-    t = circuit_GL(string,1)
+    dev = np.random.normal(0, eps*0.1, 1)[0] 
+    t = circuit_GL(string,1) +dev
     if (t>eps):
       L[0].append([k])
 
@@ -90,7 +91,8 @@ def GL_alg(eps):
         string.extend(j)
         string.append(k)
         string.extend([0]*(n-i-2))
-        t = circuit_GL(string,i+2)
+        dev = np.random.normal(0, eps*0.1, 1)[0] 
+        t = circuit_GL(string,i+2) +dev
         if (t>eps):
           string = []
           string.extend(j)
@@ -122,11 +124,12 @@ def circuit(string):
 
   return qml.expval(qml.PauliZ(4*n))
 
-def abs_value(L4):
+def abs_value(L4,eps):
   coeff_L = []
 
   for i in L4:
-    t = circuit(i)
+    dev = np.random.normal(0, eps*0.1, 1)[0] 
+    t = circuit(i) +dev
     coeff_L.append(np.sqrt(t))
 
 
@@ -164,13 +167,15 @@ def circuit_super(string1,string2,t):
 
   return qml.expval(qml.PauliZ(4*n))
 
-def signed_coeff(coeff_L,L4):
+def signed_coeff(coeff_L,L4,eps):
   signed_coeff = []
   k = np.argmax(coeff_L)
   for i in range(len(L4)):
     #print("i =",i)
-    x = circuit_super(L4[k],L4[i],0)
-    y = circuit_super(L4[k],L4[i],1)
+    dev = np.random.normal(0, eps*0.1, 1)[0] 
+    x = circuit_super(L4[k],L4[i],0) +dev
+    dev = np.random.normal(0, eps*0.1, 1)[0] 
+    y = circuit_super(L4[k],L4[i],1) +dev
     if(x<y):
       signed_coeff.append(-coeff_L[i])
     else:
@@ -214,6 +219,7 @@ def check(L4,signed,H):
 
 
 #Now we check the code for 15 random hermitian unitaries:
+eps =0.01
 k = 0
 for i in range(15):
   print(i)
@@ -221,9 +227,9 @@ for i in range(15):
   # This is the target Quantum Boolean Function
   H = gate[0]@gate[1]@gate[2]
   L4 = []
-  L4 = GL_alg(0.01)
-  coeff_L = abs_value(L4)
-  signed = signed_coeff(coeff_L,L4)
+  L4 = GL_alg(eps)
+  coeff_L = abs_value(L4,eps)
+  signed = signed_coeff(coeff_L,L4,eps)
   k = k + check(L4,signed,H)
   print("k = ", k)
   print()
