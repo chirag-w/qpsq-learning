@@ -1,6 +1,9 @@
 #Plot errors in two methods of constructing QSQ oracles
 #1 - Classical shadows for measuring observables
 #2 - Norally distributed error
+import sys
+
+sys.path.append('../')
 
 from coeff import *
 import seaborn as sns
@@ -60,7 +63,7 @@ root_samples = np.sqrt(num_samples)
 
 
 D1 = classical_shadow_error(n, num_samples, U, O, N)
-D2 = np.random.normal(0, tau/2*root_samples, N)/root_samples
+D2 = np.random.normal(0, tau/2, N)
 
 
 

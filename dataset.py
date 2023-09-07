@@ -86,7 +86,7 @@ This function computes trace(O(U * rho * U^dag))
 
 return: {alpha_i}_{i=1}^N
 '''
-def q_statistical_query(U,O,input_states,N,tau, num_samples):
+def q_statistical_query(U,O,input_states,N,tau):
     alpha = np.zeros(N, dtype = float)
     # output_states = []
     N = len(input_states)
@@ -108,8 +108,7 @@ def q_statistical_query(U,O,input_states,N,tau, num_samples):
                 obs = np.kron(obs,pauli_obs[int(P[ind])])
             exp_i+= coeff*np.trace(obs@output_i).real
 
-        root_samples = np.sqrt(num_samples)
-        dev = np.random.normal(0, tau/2*root_samples, 1)[0]/root_samples  #By choosing std deviation root_samples*tau/2 and then normalizing, 95.45% of deviations will be between -tau and +tau
+        dev = np.random.normal(0, tau/2, 1)[0]  #By choosing std deviation tau/2, 95.45% of deviations will be between -tau and +tau
         alpha[i] = exp_i+dev
         # print(input_states[i], exp_i, alpha[i])
 

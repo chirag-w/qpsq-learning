@@ -112,7 +112,7 @@ def hyperparams(eps,O,n):
 
 def learn(U,O,N,n,eps, construct_data = True, inp = None, out = None, flag = 0, tau = 0):
     k,eps_tilde = hyperparams(eps,O,n)
-    # print(k,eps_tilde)
+    # print('k,eps_tilde=',k,eps_tilde)
     # eps_tilde = 0
 
     if flag == 0:
